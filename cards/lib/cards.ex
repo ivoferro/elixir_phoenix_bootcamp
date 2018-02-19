@@ -45,4 +45,11 @@ defmodule Cards do
     File.write(filename, bin)
   end
 
+  def load(filename) do
+    case File.read(filename) do
+      { :ok, bin } -> :erlang.binary_to_term(bin)
+      { :error, _reason } -> "The file doesn't exists"
+    end
+  end
+
 end
