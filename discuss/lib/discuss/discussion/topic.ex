@@ -1,14 +1,18 @@
-defmodule Discuss.Topic do
+defmodule Discuss.Discussion.Topic do
   use Ecto.Schema
   import Ecto.Changeset
 
+
   schema "topics" do
     field :title, :string
+
+    timestamps()
   end
 
-  def changeset(struct, params \\ %{}) do
-    struct
-    |> cast(params, [:title])
+  @doc false
+  def changeset(topic, attrs) do
+    topic
+    |> cast(attrs, [:title])
     |> validate_required([:title])
   end
 end
