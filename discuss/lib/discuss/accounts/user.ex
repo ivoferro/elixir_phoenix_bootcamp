@@ -8,6 +8,8 @@ defmodule Discuss.Accounts.User do
     field :provider, :string
     field :token, :string
 
+    has_many :topics, Discuss.Discussion.Topic
+
     timestamps()
   end
 
