@@ -6,7 +6,7 @@ defmodule Discuss.Discussion do
   import Ecto.Query, warn: false
   alias Discuss.Repo
 
-  alias Discuss.Discussion.Topic
+  alias Discuss.Discussion.{Topic, Comment}
 
   @doc """
   Returns the list of topics.
@@ -35,7 +35,11 @@ defmodule Discuss.Discussion do
       ** (Ecto.NoResultsError)
 
   """
-  def get_topic!(id), do: Repo.get!(Topic, id)
+  def get_topic!(id) do
+    Topic
+    |> Repo.get!(id)
+    |> Repo.preload(comments: [:user])
+  end
 
   @doc """
   Creates a topic.
@@ -118,4 +122,26 @@ defmodule Discuss.Discussion do
   def change_topic(%Topic{} = topic) do
     Topic.changeset(topic, %{})
   end
+
+
+  # Comments
+
+  @doc """
+  Returns the list of comments.
+
+  """
+  def list_comments do
+    Repo.all(Comment)
+  end
+
+  @doc """
+  Creates a comment.
+  """
+  def create_comment(attrs \\ %{}, topic, user_id) do
+    topic
+    |> Ecto.build_assoc(:comments, user_id: user_id)
+    |> Comment.changeset(attrs)
+    |> Repo.insert()
+  end
+
 end

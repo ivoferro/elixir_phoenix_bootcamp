@@ -5,8 +5,7 @@ defmodule DiscussWeb.CommentChannel do
   def join("comment:" <> topic_id, payload, socket) do
     if authorized?(payload) do
       topic = Discussion.get_topic!(topic_id)
-      IO.inspect(topic, label: "TOPICZINHO")
-      {:ok, socket}
+      {:ok, %{comments: topic.comments}, assign(socket, :topic, topic)}
     else
       {:error, %{reason: "unauthorized"}}
     end
@@ -23,6 +22,18 @@ defmodule DiscussWeb.CommentChannel do
   def handle_in("shout", payload, socket) do
     broadcast socket, "shout", payload
     {:noreply, socket}
+  end
+
+  def handle_in("comment:add", comment_attrs, socket) do
+    topic = socket.assigns.topic
+    user_id = socket.assigns.user_id
+    case Discuss.Discussion.create_comment(comment_attrs, topic, user_id) do
+      {:ok, comment} ->
+        broadcast!(socket, "comment:#{topic.id}:new", %{comment: comment})
+        {:reply, :ok, socket}
+      {:error, changeset} ->
+        {:reply, {:error, %{errors: changeset}}, socket}
+    end
   end
 
   # Add authorization logic here as required.

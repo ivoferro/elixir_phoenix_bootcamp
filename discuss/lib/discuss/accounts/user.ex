@@ -2,7 +2,7 @@ defmodule Discuss.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-
+  @derive {Poison.Encoder, only: [:email]}
   schema "users" do
     field :email, :string
     field :provider, :string
