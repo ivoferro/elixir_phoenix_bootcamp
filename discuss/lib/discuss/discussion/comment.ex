@@ -1,13 +1,13 @@
-defmodule Discuss.Discussion.Topic do
+defmodule Discuss.Discussion.Comment do
   use Ecto.Schema
   import Ecto.Changeset
 
 
   schema "topics" do
-    field :title, :string
+    field :content, :string
 
     belongs_to :user, Discuss.Accounts.User
-    has_many :comments, Discuss.Discussion.Comment
+    belongs_to :topic, Discuss.Discussion.Topic
 
     timestamps()
   end
@@ -15,7 +15,7 @@ defmodule Discuss.Discussion.Topic do
   @doc false
   def changeset(topic, attrs) do
     topic
-    |> cast(attrs, [:title])
-    |> validate_required([:title])
+    |> cast(attrs, [:content])
+    |> validate_required([:content])
   end
 end

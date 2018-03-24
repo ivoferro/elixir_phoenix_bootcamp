@@ -76,4 +76,11 @@ defmodule DiscussWeb.TopicController do
       |> halt()
     end
   end
+
+  def show(conn, %{"id" => id}) do
+    topic = Discussion.get_topic!(id)
+
+    conn
+    |> render("show.html", topic: topic)
+  end
 end
